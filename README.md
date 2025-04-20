@@ -2,12 +2,12 @@
 Super Flappy Bird é um jogo web inspirado no clássico Flappy Bird, com recursos adicionais como níveis, moedas, nuvens animadas e uma interface estilizada. Desenvolvido com HTML5 Canvas, CSS e JavaScript, o jogo oferece uma experiência divertida e desafiadora para jogadores de todas as idades.
 Funcionalidades
 
-**Jogabilidade Clássica:** Controle o pássaro para evitar canos e coletar moedas.
-**Sistema de Níveis:** Progrida através de níveis com dificuldade crescente, desbloqueando recompensas.
-**Moedas e Recompensas:** Colete moedas durante o jogo e receba bônus ao subir de nível.
-**Interface Animada:** Inclui nuvens em movimento, animação do pássaro e efeitos visuais.
-**Controles:** Suporta clique do mouse, toque na tela (para dispositivos móveis) e teclas (espaço ou seta para cima).
-**Telas Interativas:** Tela inicial, tela de game over e tela de progressão de nível.
+**Jogabilidade Clássica:** Controle o pássaro para evitar canos e coletar moedas.<br></br>
+**Sistema de Níveis:** Progrida através de níveis com dificuldade crescente, desbloqueando recompensas.<br></br>
+**Moedas e Recompensas:** Colete moedas durante o jogo e receba bônus ao subir de nível.<br></br>
+**Interface Animada:** Inclui nuvens em movimento, animação do pássaro e efeitos visuais.<br></br>
+**Controles:** Suporta clique do mouse, toque na tela (para dispositivos móveis) e teclas (espaço ou seta para cima).<br></br>
+**Telas Interativas:** Tela inicial, tela de game over e tela de progressão de nível.<br></br>
 **API Externa:** Integração com uma API para manipulação de moedas, níveis e pontuação.
 
 ## Como Executar
