@@ -1,6 +1,7 @@
 # Super Flappy Bird
 Super Flappy Bird é um jogo web inspirado no clássico Flappy Bird, com recursos adicionais como níveis, moedas, nuvens animadas e uma interface estilizada. Desenvolvido com HTML5 Canvas, CSS e JavaScript, o jogo oferece uma experiência divertida e desafiadora para jogadores de todas as idades.
-Funcionalidades
+
+## Funcionalidades
 
 **Jogabilidade Clássica:** Controle o pássaro para evitar canos e coletar moedas.<br></br>
 **Sistema de Níveis:** Progrida através de níveis com dificuldade crescente, desbloqueando recompensas.<br></br>
