@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Flappy Bird</title>
+    <title>Super Flappy Bird - Modo Fácil</title>
     <style>
         body {
             margin: 0;
@@ -150,6 +150,17 @@
             z-index: 5;
         }
         
+        #difficultyContainer {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 5;
+        }
+        
         #audioStatus {
             position: absolute;
             bottom: 15px;
@@ -174,9 +185,11 @@
             <div id="levelProgressBar"></div>
         </div>
         <div id="levelDisplay">Nível 1</div>
+        <div id="difficultyContainer">Modo: Fácil</div>
         
         <div id="startScreen">
             <h1 id="title">Super Flappy Bird</h1>
+            <p>Modo Fácil - Para Iniciantes</p>
             <p>Toque ou clique para voar</p>
             <button class="button" id="startButton">INICIAR</button>
         </div>
@@ -185,8 +198,7 @@
             <h2>Game Over</h2>
             <p id="finalScore">Pontos: 0</p>
             <p id="finalCoins">Moedas: 0</p>
-            <button class="button" id="restartButton" disabled>JOGAR NOVAMENTE</button>
-            <p id="audioStatus">Aguarde o fim do áudio...</p>
+            <button class="button" id="restartButton">JOGAR NOVAMENTE</button>
         </div>
         
         <div id="levelUpScreen">
@@ -195,19 +207,6 @@
             <p id="rewardMessage">Recompensa: 50 moedas</p>
             <button class="button" id="continueButton">CONTINUAR</button>
         </div>
-        
-        <!-- Elementos de áudio adicionados aqui -->
-        <audio id="mainTheme" loop>
-            <source src="Main-Theme.mp3" type="audio/mpeg">
-        </audio>
-        
-        <audio id="levelUpSound">
-            <source src="Jogo-Concluido.mp3" type="audio/mpeg">
-        </audio>
-        
-        <audio id="gameOverSound">
-            <source src="Game-Over.mp3" type="audio/mpeg">
-        </audio>
     </div>
 
     <script>
@@ -231,47 +230,7 @@
             const levelDisplay = document.getElementById('levelDisplay');
             const newLevelMessage = document.getElementById('newLevelMessage');
             const rewardMessage = document.getElementById('rewardMessage');
-            const audioStatus = document.getElementById('audioStatus');
             
-            // Áudio elements
-            const mainTheme = document.getElementById('mainTheme');
-            const levelUpSound = document.getElementById('levelUpSound');
-            const gameOverSound = document.getElementById('gameOverSound');
-            
-            // Adicionar evento para quando o áudio de game over terminar
-            gameOverSound.addEventListener('ended', function() {
-                // Habilitar o botão de reinício
-                restartButton.disabled = false;
-                audioStatus.textContent = "Pronto para reiniciar!";
-                audioStatus.style.color = "#FFD700";
-            });
-            
-            // Função para controlar o áudio
-            function playAudio(audioElement) {
-                // Parar todos os áudios primeiro
-                mainTheme.pause();
-                mainTheme.currentTime = 0;
-                
-                levelUpSound.pause();
-                levelUpSound.currentTime = 0;
-                
-                gameOverSound.pause();
-                gameOverSound.currentTime = 0;
-                
-                // Tocar o áudio solicitado
-                audioElement.play().catch(e => {
-                    console.log("Erro ao reproduzir áudio:", e);
-                    // Muitos navegadores exigem interação do usuário antes de permitir reprodução de áudio
-                    // Este erro é esperado ao carregar a página inicialmente
-                    
-                    // Se for o áudio de game over e houver erro, habilitamos o botão mesmo assim
-                    if (audioElement === gameOverSound) {
-                        restartButton.disabled = false;
-                        audioStatus.textContent = "Áudio indisponível. Pronto para reiniciar!";
-                    }
-                });
-            }
-
             // Game variables
             let isPlaying = false;
             let animationFrameId;
@@ -280,22 +239,22 @@
             let score = 0;
             let coins = 0;
             let level = 1;
-            let pointsToNextLevel = 10;
+            let pointsToNextLevel = 5; // Reduzido de 10 para 5 pontos
             let levelProgress = 0;
-            let gameSpeed = 1.75;
-            let gravity = 0.3;
+            let gameSpeed = 1.2; // Reduzido de 1.75 para 1.2 (mais lento)
+            let gravity = 0.15; // Reduzido de 0.3 para 0.15 (menos gravidade)
             let frameCount = 0;
 
             // Bird properties
             const bird = {
                 x: 50,
                 y: canvas.height / 2,
-                width: 34,
-                height: 24,
+                width: 40, // Aumentado de 34 para 40
+                height: 28, // Aumentado de 24 para 28
                 velocity: 0,
-                jumpStrength: -6,
+                jumpStrength: -5, // Modificado de -6 para -5 (salto mais suave)
                 color: '#FFEB3B',
-                radius: 15,
+                radius: 18, // Aumentado de 15 para 18 (pássaro maior)
                 frame: 0,
                 flapSpeed: 0,
                 rotation: 0
@@ -304,15 +263,15 @@
             // Pipes array & properties
             const pipes = [];
             const pipeWidth = 52;
-            const pipeGap = 150;
+            const pipeGap = 200; // Aumentado de 150 para 200 (mais espaço entre os tubos)
             const pipeColor = '#43A047';
             const pipeCapColor = '#2E7D32';
             let pipeSpawnTime = 0;
-            const pipeSpawnInterval = 1500; // milliseconds
+            const pipeSpawnInterval = 2000; // Aumentado de 1500 para 2000 (menos tubos)
 
             // Coins array & properties
             const gameCoins = [];
-            const coinSize = 15;
+            const coinSize = 18; // Aumentado de 15 para 18 (moedas maiores)
             const coinColor = '#FFD700';
             let coinRotation = 0;
 
@@ -354,9 +313,6 @@
                 isPlaying = true;
                 pipeSpawnTime = Date.now();
                 
-                // Iniciar música tema
-                playAudio(mainTheme);
-                
                 gameLoop();
             }
 
@@ -367,15 +323,7 @@
                 finalScore.textContent = `Pontos: ${score}`;
                 finalCoins.textContent = `Moedas: ${coins}`;
                 
-                // Desabilitar botão de reinício até que o áudio termine
-                restartButton.disabled = true;
-                audioStatus.textContent = "Aguarde o fim do áudio...";
-                audioStatus.style.color = "white";
-                
                 gameOverScreen.style.display = 'flex';
-                
-                // Tocar som de game over
-                playAudio(gameOverSound);
             }
 
             // Level up
@@ -386,11 +334,11 @@
                 const oldLevel = level;
                 level++;
                 levelProgress = 0;
-                pointsToNextLevel = Math.floor(pointsToNextLevel * 1.5);
+                pointsToNextLevel = Math.floor(pointsToNextLevel * 1.2); // Menor incremento: 1.5 -> 1.2
                 
-                // Increase difficulty
-                gravity += 0.05;
-                gameSpeed += 0.3;
+                // Increase difficulty (mais suave)
+                gravity += 0.02; // Reduzido de 0.05 para 0.02
+                gameSpeed += 0.15; // Reduzido de 0.3 para 0.15
                 
                 // Give rewards
                 const reward = level * 50;
@@ -402,9 +350,6 @@
                 levelUpScreen.style.display = 'flex';
                 
                 updateLevelDisplay();
-                
-                // Tocar som de level up
-                playAudio(levelUpSound);
             }
 
             // Continue after level up
@@ -418,9 +363,6 @@
                 }
                 
                 pipeSpawnTime = Date.now();
-                
-                // Retomar música tema
-                playAudio(mainTheme);
                 
                 gameLoop();
             }
@@ -448,7 +390,7 @@
 
             // Create a new pipe
             function createPipe() {
-                const minHeight = 60;
+                const minHeight = 50; // Reduzido de 60 para 50 (tubo mínimo menor)
                 const maxHeight = canvas.height - groundHeight - pipeGap - minHeight;
                 const height = Math.floor(Math.random() * (maxHeight - minHeight) + minHeight);
                 
@@ -457,7 +399,7 @@
                     topHeight: height,
                     bottomY: height + pipeGap,
                     passed: false,
-                    hasCoin: Math.random() > 0.5 // 50% chance to have a coin
+                    hasCoin: Math.random() > 0.3 // Aumentado de 0.5 para 0.7 (70% chance de ter moeda)
                 });
                 
                 if (pipes[pipes.length - 1].hasCoin) {
@@ -491,7 +433,7 @@
                     y: y,
                     width: width,
                     height: height,
-                    speed: 0.5 + Math.random() * 0.5
+                    speed: 0.3 + Math.random() * 0.3 // Reduzido de 0.5 para 0.3 (nuvens mais lentas)
                 });
             }
 
@@ -509,7 +451,7 @@
                 bird.y += bird.velocity;
                 
                 // Rotate bird based on velocity
-                bird.rotation = Math.min(Math.PI/4, Math.max(-Math.PI/4, bird.velocity * 0.04));
+                bird.rotation = Math.min(Math.PI/6, Math.max(-Math.PI/6, bird.velocity * 0.03));
                 
                 // Bird animation
                 if (frameCount % 5 === 0) {
@@ -549,8 +491,8 @@
                         updateScore();
                     }
                     
-                    // Check for collision
-                    if (checkPipeCollision(pipes[i])) {
+                    // Check for collision - com mais tolerância (apenas 90% do raio do pássaro)
+                    if (checkPipeCollision(pipes[i], 0.9)) {
                         gameOver();
                     }
                     
@@ -566,8 +508,8 @@
                     gameCoins[i].x -= gameSpeed;
                     gameCoins[i].rotation = coinRotation;
                     
-                    // Check coin collection
-                    if (!gameCoins[i].collected && checkCoinCollision(gameCoins[i])) {
+                    // Check coin collection - com mais tolerância (colisão mais fácil, 120% do raio)
+                    if (!gameCoins[i].collected && checkCoinCollision(gameCoins[i], 1.2)) {
                         gameCoins[i].collected = true;
                         coins++;
                         updateScore();
@@ -592,14 +534,16 @@
             }
 
             // Check collision with pipe
-            function checkPipeCollision(pipe) {
-                if (bird.x + bird.radius > pipe.x && bird.x - bird.radius < pipe.x + pipeWidth) {
+            function checkPipeCollision(pipe, radiusFactor = 1) {
+                const effectiveRadius = bird.radius * radiusFactor;
+                
+                if (bird.x + effectiveRadius > pipe.x && bird.x - effectiveRadius < pipe.x + pipeWidth) {
                     // Top pipe
-                    if (bird.y - bird.radius < pipe.topHeight) {
+                    if (bird.y - effectiveRadius < pipe.topHeight) {
                         return true;
                     }
                     // Bottom pipe
-                    if (bird.y + bird.radius > pipe.bottomY) {
+                    if (bird.y + effectiveRadius > pipe.bottomY) {
                         return true;
                     }
                 }
@@ -607,12 +551,12 @@
             }
 
             // Check collision with coin
-            function checkCoinCollision(coin) {
+            function checkCoinCollision(coin, radiusFactor = 1) {
                 const dx = bird.x - coin.x;
                 const dy = bird.y - coin.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 
-                return distance < bird.radius + coin.radius;
+                return distance < (bird.radius + coin.radius) * radiusFactor;
             }
 
             // Draw everything
@@ -746,7 +690,7 @@
                 
                 // Dollar sign
                 ctx.fillStyle = '#FFF9C4';
-                ctx.font = 'bold 12px Arial';
+                ctx.font = 'bold 14px Arial'; // Aumentado de 12 para 14
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('$', 0, 0);
