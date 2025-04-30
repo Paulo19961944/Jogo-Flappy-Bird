@@ -198,7 +198,8 @@
             <h2>Game Over</h2>
             <p id="finalScore">Pontos: 0</p>
             <p id="finalCoins">Moedas: 0</p>
-            <button class="button" id="restartButton">JOGAR NOVAMENTE</button>
+            <button class="button" id="restartButton" disabled>JOGAR NOVAMENTE</button>
+            <p id="audioStatus">Aguarde o fim do áudio...</p>
         </div>
         
         <div id="levelUpScreen">
@@ -207,6 +208,19 @@
             <p id="rewardMessage">Recompensa: 50 moedas</p>
             <button class="button" id="continueButton">CONTINUAR</button>
         </div>
+        
+        <!-- Elementos de áudio adicionados aqui -->
+        <audio id="mainTheme" loop>
+            <source src="Main-Theme.mp3" type="audio/mpeg">
+        </audio>
+        
+        <audio id="levelUpSound">
+            <source src="Jogo-Concluido.mp3" type="audio/mpeg">
+        </audio>
+        
+        <audio id="gameOverSound">
+            <source src="Game-Over.mp3" type="audio/mpeg">
+        </audio>
     </div>
 
     <script>
@@ -230,7 +244,47 @@
             const levelDisplay = document.getElementById('levelDisplay');
             const newLevelMessage = document.getElementById('newLevelMessage');
             const rewardMessage = document.getElementById('rewardMessage');
+            const audioStatus = document.getElementById('audioStatus');
             
+            // Áudio elements
+            const mainTheme = document.getElementById('mainTheme');
+            const levelUpSound = document.getElementById('levelUpSound');
+            const gameOverSound = document.getElementById('gameOverSound');
+            
+            // Adicionar evento para quando o áudio de game over terminar
+            gameOverSound.addEventListener('ended', function() {
+                // Habilitar o botão de reinício
+                restartButton.disabled = false;
+                audioStatus.textContent = "Pronto para reiniciar!";
+                audioStatus.style.color = "#FFD700";
+            });
+            
+            // Função para controlar o áudio
+            function playAudio(audioElement) {
+                // Parar todos os áudios primeiro
+                mainTheme.pause();
+                mainTheme.currentTime = 0;
+                
+                levelUpSound.pause();
+                levelUpSound.currentTime = 0;
+                
+                gameOverSound.pause();
+                gameOverSound.currentTime = 0;
+                
+                // Tocar o áudio solicitado
+                audioElement.play().catch(e => {
+                    console.log("Erro ao reproduzir áudio:", e);
+                    // Muitos navegadores exigem interação do usuário antes de permitir reprodução de áudio
+                    // Este erro é esperado ao carregar a página inicialmente
+                    
+                    // Se for o áudio de game over e houver erro, habilitamos o botão mesmo assim
+                    if (audioElement === gameOverSound) {
+                        restartButton.disabled = false;
+                        audioStatus.textContent = "Áudio indisponível. Pronto para reiniciar!";
+                    }
+                });
+            }
+
             // Game variables
             let isPlaying = false;
             let animationFrameId;
@@ -313,6 +367,9 @@
                 isPlaying = true;
                 pipeSpawnTime = Date.now();
                 
+                // Iniciar música tema
+                playAudio(mainTheme);
+                
                 gameLoop();
             }
 
@@ -323,7 +380,15 @@
                 finalScore.textContent = `Pontos: ${score}`;
                 finalCoins.textContent = `Moedas: ${coins}`;
                 
+                // Desabilitar botão de reinício até que o áudio termine
+                restartButton.disabled = true;
+                audioStatus.textContent = "Aguarde o fim do áudio...";
+                audioStatus.style.color = "white";
+                
                 gameOverScreen.style.display = 'flex';
+                
+                // Tocar som de game over
+                playAudio(gameOverSound);
             }
 
             // Level up
@@ -350,6 +415,9 @@
                 levelUpScreen.style.display = 'flex';
                 
                 updateLevelDisplay();
+                
+                // Tocar som de level up
+                playAudio(levelUpSound);
             }
 
             // Continue after level up
@@ -363,6 +431,9 @@
                 }
                 
                 pipeSpawnTime = Date.now();
+                
+                // Retomar música tema
+                playAudio(mainTheme);
                 
                 gameLoop();
             }
